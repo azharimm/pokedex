@@ -26,7 +26,7 @@ function App() {
 						</h1>
 						<div className="flex items-center text-white text-xs">
 							<Link
-								to="/detail"
+								to="/detail/1"
 								className="px-1 py-2 mr-2 w-20 sm:w-20 flex justify-center bg-green-600 rounded-md h-8 items-center"
 							>
 								<span className="sm:block">&nbsp;Detail</span>
@@ -41,11 +41,11 @@ function App() {
 					</div>
 				</nav>
 				<Switch>
-					<Route path="/detail">
-						<Detail />
-					</Route>
-					<Route path="/owned">
+					<Route path="/owned" exact>
 						<Owned />
+					</Route>
+					<Route path="/detail/:id">
+						<Detail/>
 					</Route>
 					<Route path="/" exact>
 						<Home />

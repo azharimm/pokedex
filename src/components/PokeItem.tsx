@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const PokeItem = () => {
 	return (
-		<Link to="/detail">
+		<Link to={`detail/${1}`}>
 			<div className="transform transition duration-500 hover:scale-110 motion-reduce:transform-none cursor-pointer flex justify-center items-center">
 				<div className="h-56 w-72 absolute flex justify-center items-center">
 					<img

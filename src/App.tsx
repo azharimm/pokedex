@@ -26,16 +26,10 @@ function App() {
 						</h1>
 						<div className="flex items-center text-white text-xs">
 							<Link
-								to="/detail/1"
-								className="px-1 py-2 mr-2 w-20 sm:w-20 flex justify-center bg-green-600 rounded-md h-8 items-center"
-							>
-								<span className="sm:block">&nbsp;Detail</span>
-							</Link>
-							<Link
 								to="/owned"
-								className="px-1 py-2 mr-2 w-20 sm:w-20 flex justify-center bg-green-600 rounded-md h-8 items-center"
+								className="px-1 py-2 mr-2 w-40 sm:w-40 flex justify-center bg-green-600 hover:bg-green-500 rounded-md h-8 items-center"
 							>
-								<span className="sm:block">&nbsp;Owned</span>
+								<span className="sm:block">&nbsp;My Pokemon</span>
 							</Link>
 						</div>
 					</div>

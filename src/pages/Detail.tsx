@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import Modal from "../components/Modal";
 
 const Detail = () => {
+	const [modal, setModal] = useState(false);
 	return (
 		<>
 			<div className="w-full max-w-6xl mt-3 rounded bg-white shadow-xl p-10 lg:p-20 mx-auto text-gray-800 relative md:text-left">
@@ -23,10 +25,10 @@ const Detail = () => {
 									Bulbasaur
 								</span>
 								<div className="">
-									<span className="text-sm font-medium bg-green-600 border-2 border-red-500 py-1 px-2 rounded text-white align-middle mr-1">
+									<span className="text-sm font-medium bg-green-600 border-2 border-white py-1 px-2 rounded text-white align-middle mr-1">
 										Grass
 									</span>
-									<span className="text-sm font-medium bg-purple-600 border-2 border-red-500 py-1 px-2 rounded text-white align-middle">
+									<span className="text-sm font-medium bg-purple-600 border-2 border-white py-1 px-2 rounded text-white align-middle">
 										Poison
 									</span>
 								</div>
@@ -153,7 +155,7 @@ const Detail = () => {
 								>
 									Leave
 								</Link>
-								<button className="bg-blue-500 hover:bg-blue-400 text-white font-semibold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded ml-1">
+								<button className="bg-blue-500 hover:bg-blue-400 text-white font-semibold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded ml-1" onClick={() => setModal(prev => !prev)}>
 									Catch!
 								</button>
 							</div>
@@ -161,6 +163,7 @@ const Detail = () => {
 					</div>
 				</div>
 			</div>
+			<Modal modal={modal} setModal={() => setModal(prev => !prev)} success={true} />
 		</>
 	);
 };

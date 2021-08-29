@@ -54,7 +54,7 @@ const Detail = () => {
 								<div className="">
 									{data.pokemon_v2_pokemon[0].pokemon_v2_pokemontypes.map(
 										(poke: any, index: number) => (
-											<PokeType index={index} type={poke.pokemon_v2_type} />
+											<PokeType key={index} name={poke.pokemon_v2_type.name} />
 										)
 									)}
 								</div>
@@ -94,7 +94,7 @@ const Detail = () => {
 									<tbody>
 										{data.pokemon_v2_pokemon[0].pokemon_v2_pokemonstats.map(
 											(poke: any, index: number) => (
-												<PokeStat index={index} name={poke.pokemon_v2_stat.name} stat={poke.base_stat} />
+												<PokeStat key={index} name={poke.pokemon_v2_stat.name} stat={poke.base_stat} />
 											)
 										)}
 									</tbody>
@@ -105,7 +105,7 @@ const Detail = () => {
 								<div className="flex flex-wrap">
 									{
 										data.pokemon_v2_pokemon[0].pokemon_v2_pokemonmoves.map((poke: any, index: number) => (
-											<PokeMove index={index} name={poke.pokemon_v2_move.name} />
+											<PokeMove key={index} name={poke.pokemon_v2_move.name} />
 										))
 									}
 								</div>

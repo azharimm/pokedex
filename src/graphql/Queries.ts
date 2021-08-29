@@ -14,6 +14,20 @@ export const GET_POKEMON = gql`
 	}
 `;
 
+export const LOAD_MORE = gql`
+	query listPokemons($offset: Int!) {
+		pokemon_v2_pokemon(limit: 20, offset: $offset) {
+			name
+			id
+			pokemon_v2_pokemontypes(limit: 1) {
+				pokemon_v2_type {
+					name
+				}
+			}
+		}
+	}
+`;
+
 export const GET_POKEMON_DETAIL = gql`
 	query showPokemon($id: Int!) {
 		pokemon_v2_pokemon(where: { id: { _eq: $id } }) {

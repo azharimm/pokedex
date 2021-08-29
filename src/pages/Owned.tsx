@@ -32,14 +32,14 @@ const Owned = () => {
 						You don't have any pokemons. Try catch one ?
 					</div>
 				) : (
-					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+					<div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
 						{pokemons.map((d: PokemonType) => (
 							<PokeItem
 								pokemon={d}
 								releasePokemon={(pokeName) =>
 									releasePokemon(pokeName)
 								}
-								key={d.id}
+								key={d.pokeName}
 							/>
 						))}
 					</div>

@@ -49,9 +49,7 @@ const Modal: React.FC<Props> = ({
 			const checkIfNameExists = ownedPokemonParsed.find(
 				(p: PokemonType) => p.pokeName === pokeName
 			);
-			console.log(checkIfNameExists);
 			if (checkIfNameExists) {
-				console.log("name is not available");
 				setNotUnique(true);
 				return;
 			}

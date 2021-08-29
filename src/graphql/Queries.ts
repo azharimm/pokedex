@@ -15,11 +15,27 @@ export const GET_POKEMON = gql`
 `;
 
 export const LOAD_MORE = gql`
-	query listPokemons($offset: Int!) {
+	query loadMore($offset: Int!) {
 		pokemon_v2_pokemon(limit: 20, offset: $offset) {
 			name
 			id
 			pokemon_v2_pokemontypes(limit: 1) {
+				pokemon_v2_type {
+					name
+				}
+			}
+		}
+	}
+`;
+
+export const SEARCH_POKEMON = gql`
+	query samplePokeAPIquery($name: String!) {
+		pokemon_v2_pokemon(where: { name: { _like: $name } }) {
+			name
+			id
+			height
+			weight
+			pokemon_v2_pokemontypes {
 				pokemon_v2_type {
 					name
 				}

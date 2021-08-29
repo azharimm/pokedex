@@ -1,9 +1,15 @@
 import React from "react";
 
-const Search = () => {
+export type Props = {
+	query: string;
+	setQuery: (query: string) => void;
+	handleSearch: (e: React.FormEvent, city: string) => void;
+}
+
+const Search: React.FC<Props> = ({ query, setQuery, handleSearch}) => {
 	return (
 		<div className="text-center mt-4 mx-5 md:mx-auto">
-			<form onSubmit={(e) => {}}>
+			<form onSubmit={(e) => handleSearch(e, query)}>
 				<div className="w-full md:w-2/3 mx-auto h-10 pl-3 pr-2 bg-green-200 border rounded-full flex justify-between items-center relative">
 					<input
 						type="search"
@@ -11,7 +17,8 @@ const Search = () => {
 						id="search"
 						autoComplete="off"
 						placeholder="Search"
-						onChange={(e) => {}}
+						onChange={(e) => setQuery(e.target.value)}
+						required={true}
 						className="appearance-none w-full bg-green-200 outline-none focus:outline-none active:outline-none"
 					/>
 					<button

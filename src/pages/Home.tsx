@@ -5,6 +5,7 @@ import { GET_POKEMON, LOAD_MORE, SEARCH_POKEMON } from "../graphql/Queries";
 
 import Search from "../components/Search";
 import PokeItem from "../components/PokeItem";
+import Loading from "../components/Loading";
 
 import { useStateValue } from "../context/StateProvider";
 
@@ -21,32 +22,32 @@ export type PokemonType = {
 const Home = () => {
 	const { state, dispatch } = useStateValue();
 	const [fetchPokemon, fetch] = useLazyQuery(GET_POKEMON, {
-		onCompleted: (data => {
+		onCompleted: (data) => {
 			dispatch({
-				type: 'FETCH_POKEMON',
-				payload: data.pokemon_v2_pokemon
-			})
-		})
+				type: "FETCH_POKEMON",
+				payload: data.pokemon_v2_pokemon,
+			});
+		},
 	});
 	const [loadMore, more] = useLazyQuery(LOAD_MORE, {
-		onCompleted: (data => {
+		onCompleted: (data) => {
 			dispatch({
-				type: 'APPEND_POKEMON',
-				payload: data.pokemon_v2_pokemon
-			})
-		})
+				type: "APPEND_POKEMON",
+				payload: data.pokemon_v2_pokemon,
+			});
+		},
 	});
 	const [searchPokemon, search] = useLazyQuery(SEARCH_POKEMON, {
-		onCompleted: (data => {
+		onCompleted: (data) => {
 			dispatch({
-				type: 'FETCH_POKEMON',
-				payload: data.pokemon_v2_pokemon
-			})
-		})
+				type: "FETCH_POKEMON",
+				payload: data.pokemon_v2_pokemon,
+			});
+		},
 	});
 
 	useEffect(() => {
-		if(state.pokemons.length === 0) {
+		if (state.pokemons.length === 0) {
 			fetchPokemon();
 		}
 	}, [state.pokemons.length, fetchPokemon]);
@@ -56,9 +57,9 @@ const Home = () => {
 			variables: { offset: state.offset },
 		});
 		dispatch({
-			type: 'SET_OFFSET',
-			payload: state.offset + 20
-		})
+			type: "SET_OFFSET",
+			payload: state.offset + 20,
+		});
 	};
 
 	const handleSearch = (e: React.FormEvent, q: string) => {
@@ -67,9 +68,9 @@ const Home = () => {
 			variables: { name: `%${q}%` },
 		});
 		dispatch({
-			type: 'SET_IS_SEARCH',
-			payload: true
-		})
+			type: "SET_IS_SEARCH",
+			payload: true,
+		});
 	};
 
 	if (fetch.error) {
@@ -86,16 +87,14 @@ const Home = () => {
 				query={state.query}
 				setQuery={(q) => {
 					dispatch({
-						type: 'SET_QUERY',
-						payload: q
-					})
+						type: "SET_QUERY",
+						payload: q,
+					});
 				}}
 				handleSearch={(e, query) => handleSearch(e, query)}
 			/>
-			{fetch.loading || search.loading  ? (
-				<div className="container w-full md:w-2/3 mx-auto mt-5">
-					<div className="text-center text-white">Loading...</div>
-				</div>
+			{fetch.loading || search.loading ? (
+				<Loading />
 			) : (
 				<div className="container w-full md:w-2/3 mx-auto mt-5">
 					{state.pokemons.length === 0 ? (
@@ -116,7 +115,9 @@ const Home = () => {
 										onClick={() => handleLoadmore()}
 										disabled={more.loading}
 									>
-										{more.loading ? "Loadmore ..." : "Loadmore"}
+										{more.loading
+											? "Loadmore ..."
+											: "Loadmore"}
 									</button>
 									{more.error && (
 										<p className="text-red-400">

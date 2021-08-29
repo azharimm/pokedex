@@ -5,6 +5,7 @@ import { GET_POKEMON_DETAIL } from "../graphql/Queries";
 import { bgColor } from "../utils/bgColor";
 //Components
 import Modal from "../components/Modal";
+import Loading from "../components/Loading";
 import PokeType from "../components/PokeType"
 import PokeStat from "../components/PokeStat";
 import PokeMove from "../components/PokeMove";
@@ -23,7 +24,7 @@ const Detail = () => {
 		return <div className="text-center text-white">Oops! Something went wrong!</div>;
 	}
 	if (loading) {
-		return <div className="text-center text-white">Loading...</div>
+		return <Loading />
 	}
 	return (
 		<>

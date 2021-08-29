@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { FormEvent, useCallback, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { useLazyQuery } from "@apollo/client";
 import { GET_POKEMON } from "../graphql/Queries";
@@ -10,30 +10,38 @@ function Navbar() {
 	const { dispatch } = useStateValue();
 	const [fetchPokemon, fetch] = useLazyQuery(GET_POKEMON);
 	useEffect(() => {
-		if(fetch.data) {
+		if (fetch.data) {
 			dispatch({
-				type: 'FETCH_POKEMON',
-				payload: fetch.data.pokemon_v2_pokemon
-			})
+				type: "FETCH_POKEMON",
+				payload: fetch.data.pokemon_v2_pokemon,
+			});
 			dispatch({
-				type: 'SET_QUERY',
-				payload: ''
-			})
+				type: "SET_QUERY",
+				payload: "",
+			});
 			dispatch({
-				type: 'SET_IS_SEARCH',
-				payload: false
-			})
+				type: "SET_IS_SEARCH",
+				payload: false,
+			});
 		}
-	}, [fetch])
-  	const handleOnClick = useCallback(() => {
-		fetchPokemon();
-		history.push('/')
-	}, [history]);
+	}, [fetch, dispatch]);
+	const handleOnClick = useCallback(
+		(e: FormEvent) => {
+			e.preventDefault();
+			fetchPokemon();
+			history.push("/");
+		},
+		[history, fetchPokemon]
+	);
 	return (
 		<nav className="w-full md:w-2/3 px-0 py-3 mx-auto">
 			<div className="flex justify-between items-center mx-5 md:mx-0">
 				<h1 className="text-white text-xl">
-					<a onClick={handleOnClick} className="flex cursor-pointer">
+					<a
+						href="/"
+						onClick={(e) => handleOnClick(e)}
+						className="flex cursor-pointer"
+					>
 						<img
 							src={logo}
 							alt="logo"

@@ -1,5 +1,5 @@
 import React from "react";
-import { bgColor } from "../utils/bgColor";
+import { bgColor } from "../utils/utils";
 
 export type Props = {
     name: string;

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { GET_POKEMON_DETAIL } from "../graphql/Queries";
-import { bgColor } from "../utils/bgColor";
+import { bgColor, catching } from "../utils/utils";
 //Components
 import Modal from "../components/Modal";
 import Loading from "../components/Loading";
@@ -16,11 +16,20 @@ interface RouteParams {
 
 const Detail = () => {
 	const [modal, setModal] = useState(false);
+	const [isCatching, setIsCatching] = useState(false);
+	const [isSuccess, setIsSuccess] = useState(false);
 	const history = useHistory();
 	let { id } = useParams<RouteParams>();
 	const { data, loading, error } = useQuery(GET_POKEMON_DETAIL, {
 		variables: { id: parseInt(id) },
 	});
+	const catchPokemon = async () => {
+		setIsCatching(true);
+		const result: any = await catching();
+		setIsCatching(false);
+		setIsSuccess(result);
+		setModal(true);
+	}
 	if (error) {
 		return <div className="text-center text-white">Oops! Something went wrong!</div>;
 	}
@@ -120,10 +129,11 @@ const Detail = () => {
 									Leave
 								</button>
 								<button
-									className="bg-blue-500 hover:bg-blue-400 text-white font-semibold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded ml-1"
-									onClick={() => setModal((prev) => !prev)}
+									className="bg-blue-500 hover:bg-blue-400 text-white font-semibold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded ml-1 disabled:opacity-50 disabled:cursor-not-allowed"
+									onClick={() => catchPokemon()}
+									disabled={isCatching}
 								>
-									Catch!
+									{isCatching ? 'Catching Pokemon...' : 'Catch!'}
 								</button>
 							</div>
 						</div>
@@ -133,7 +143,10 @@ const Detail = () => {
 			<Modal
 				modal={modal}
 				setModal={() => setModal((prev) => !prev)}
-				success={true}
+				id={data.pokemon_v2_pokemon[0].id}
+				name={data.pokemon_v2_pokemon[0].name}
+				type={data.pokemon_v2_pokemon[0].pokemon_v2_pokemontypes[0].pokemon_v2_type.name}
+				success={isSuccess}
 			/>
 		</>
 	);

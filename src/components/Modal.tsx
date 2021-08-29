@@ -1,13 +1,52 @@
-import React from "react";
+import React, { useState, FormEvent, useEffect } from "react";
 import "./Modal.css";
 
 export type Props = {
 	modal: boolean;
 	setModal: () => void;
 	success?: boolean;
+	id: number;
+	name: string;
+	type: string;
 };
 
-const Modal: React.FC<Props> = ({ modal, setModal, success }) => {
+const Modal: React.FC<Props> = ({
+	modal,
+	setModal,
+	success,
+	id,
+	name,
+	type,
+}) => {
+	const [pokeName, setPokeName] = useState("");
+	const [isSave, setIsSave] = useState(false);
+	useEffect(() => {
+		if(modal) {
+			setIsSave(false);
+		}
+	}, [modal])
+	const savePokemon = (e: FormEvent) => {
+		e.preventDefault();
+		const ownedPokemon = localStorage.getItem("ownedPokemon");
+		if (!ownedPokemon) {
+			console.log("create new local storate");
+			localStorage.setItem(
+				"ownedPokemon",
+				JSON.stringify([{ id, name, type, pokeName }])
+			);
+			return;
+		} else {
+			localStorage.setItem(
+				"ownedPokemon",
+				JSON.stringify([
+					{ id, name, type, pokeName },
+					...JSON.parse(ownedPokemon),
+				])
+			);
+		}
+		setPokeName("");
+		setIsSave(true);
+	};
 	return (
 		<div
 			className={`main-modal fixed w-full h-100 inset-0 z-50 overflow-hidden flex justify-center items-center animated fadeIn faster ${
@@ -37,25 +76,48 @@ const Modal: React.FC<Props> = ({ modal, setModal, success }) => {
 						</div>
 					</div>
 					{success ? (
-						<form>
-							<div className="my-5">
-								<label className="block w-full space-y-1 text-gray-700 text-md font-semibold px-4 py-3 rounded-xl border transition hover:bg-gray-50 hover:bg-opacity-50 hover:border-purple-800" >
-                                    <span>Give the pokemon a name</span>
-                                    <input type="text" id="name" defaultValue="" className="w-full p-3 font-thin transition duration-200 focus:shadow-md focus:outline-none ring-offset-2 border border-gray-400 rounded-lg focus:ring-2 focus:ring-purple-300" autoComplete="off" />
-                                    <label className="text-sm font-semibold text-gray-500">Please provide a unique name</label>
-                                </label>
-							</div>
-							<div className="flex justify-end pt-2">
-								<button
-									className="bg-red-500 hover:bg-red-400 text-white font-semibold py-2 px-4 border-b-4 border-red-700 hover:border-red-500 rounded"
-									onClick={setModal}
-								>
-									Cancel
-								</button>
-								<button className="bg-blue-500 hover:bg-blue-400 text-white font-semibold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded ml-1">
-									Save
-								</button>
-							</div>
+						<form onSubmit={(e) => savePokemon(e)}>
+							{isSave ? (
+								<p>
+									Your pokemon successfully catch and save
+								</p>
+							) : (
+								<>
+									<div className="my-5">
+										<label className="block w-full space-y-1 text-gray-700 text-md font-semibold px-4 py-3 rounded-xl border transition hover:bg-gray-50 hover:bg-opacity-50 hover:border-purple-800">
+											<span>Give the pokemon a name</span>
+											<input
+												type="text"
+												value={pokeName}
+												className="w-full p-3 font-thin transition duration-200 focus:shadow-md focus:outline-none ring-offset-2 border border-gray-400 rounded-lg focus:ring-2 focus:ring-purple-300"
+												autoComplete="off"
+												onChange={(e) =>
+													setPokeName(e.target.value)
+												}
+												required={true}
+											/>
+											<label className="text-sm font-semibold text-gray-500">
+												Please provide a unique name
+											</label>
+										</label>
+									</div>
+									<div className="flex justify-end pt-2">
+										<button
+											className="bg-red-500 hover:bg-red-400 text-white font-semibold py-2 px-4 border-b-4 border-red-700 hover:border-red-500 rounded"
+											type="button"
+											onClick={setModal}
+										>
+											Cancel
+										</button>
+										<button
+											className="bg-blue-500 hover:bg-blue-400 text-white font-semibold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded ml-1"
+											type="submit"
+										>
+											Save
+										</button>
+									</div>
+								</>
+							)}
 						</form>
 					) : (
 						<div>

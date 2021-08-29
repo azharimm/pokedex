@@ -61,3 +61,9 @@ export const bgColor = (type: string) : string =>  {
     }
     return 'bg-blue-50';
 }
+
+export const catching = () => {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => resolve(Math.random() < 0.5), 2000)
+    });
+}

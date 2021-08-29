@@ -8,6 +8,7 @@ import PokeItem from "../components/PokeItem";
 import Loading from "../components/Loading";
 
 import { useStateValue } from "../context/StateProvider";
+import { actionTypes } from "../context/reducer";
 
 export type PokemonType = {
 	id: number;
@@ -24,7 +25,7 @@ const Home = () => {
 	const [fetchPokemon, fetch] = useLazyQuery(GET_POKEMON, {
 		onCompleted: (data) => {
 			dispatch({
-				type: "FETCH_POKEMON",
+				type: actionTypes.FETCH_POKEMON,
 				payload: data.pokemon_v2_pokemon,
 			});
 		},
@@ -32,7 +33,7 @@ const Home = () => {
 	const [loadMore, more] = useLazyQuery(LOAD_MORE, {
 		onCompleted: (data) => {
 			dispatch({
-				type: "APPEND_POKEMON",
+				type: actionTypes.APPEND_POKEMON,
 				payload: data.pokemon_v2_pokemon,
 			});
 		},
@@ -40,7 +41,7 @@ const Home = () => {
 	const [searchPokemon, search] = useLazyQuery(SEARCH_POKEMON, {
 		onCompleted: (data) => {
 			dispatch({
-				type: "FETCH_POKEMON",
+				type: actionTypes.FETCH_POKEMON,
 				payload: data.pokemon_v2_pokemon,
 			});
 		},
@@ -81,6 +82,10 @@ const Home = () => {
 		);
 	}
 
+	if (fetch.loading || search.loading) {
+		return <Loading />;
+	}
+
 	return (
 		<div>
 			<Search
@@ -93,43 +98,38 @@ const Home = () => {
 				}}
 				handleSearch={(e, query) => handleSearch(e, query)}
 			/>
-			{fetch.loading || search.loading ? (
-				<Loading />
-			) : (
-				<div className="container w-full md:w-2/3 mx-auto mt-5">
-					{state.pokemons.length === 0 ? (
-						<div className="text-center text-white">
-							No pokemon found
+
+			<div className="container w-full md:w-2/3 mx-auto mt-5">
+				{state.pokemons.length === 0 ? (
+					<div className="text-center text-white">
+						No pokemon found
+					</div>
+				) : (
+					<>
+						<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+							{state.pokemons.map((d: PokemonType) => (
+								<PokeItem pokemon={d} key={d.id} />
+							))}
 						</div>
-					) : (
-						<>
-							<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-								{state.pokemons.map((d: PokemonType) => (
-									<PokeItem pokemon={d} key={d.id} />
-								))}
+						{state.offset <= 1000 && !state.isSearch && (
+							<div className="mx-auto text-center mt-5 pb-5">
+								<button
+									className="bg-blue-500 text-center hover:bg-blue-400 text-white font-semibold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded ml-1 disabled:opacity-50"
+									onClick={() => handleLoadmore()}
+									disabled={more.loading}
+								>
+									{more.loading ? "Loadmore ..." : "Loadmore"}
+								</button>
+								{more.error && (
+									<p className="text-red-400">
+										Oops! something went wrong!
+									</p>
+								)}
 							</div>
-							{state.offset <= 1000 && !state.isSearch && (
-								<div className="mx-auto text-center mt-5 pb-5">
-									<button
-										className="bg-blue-500 text-center hover:bg-blue-400 text-white font-semibold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded ml-1 disabled:opacity-50"
-										onClick={() => handleLoadmore()}
-										disabled={more.loading}
-									>
-										{more.loading
-											? "Loadmore ..."
-											: "Loadmore"}
-									</button>
-									{more.error && (
-										<p className="text-red-400">
-											Oops! something went wrong!
-										</p>
-									)}
-								</div>
-							)}
-						</>
-					)}
-				</div>
-			)}
+						)}
+					</>
+				)}
+			</div>
 		</div>
 	);
 };

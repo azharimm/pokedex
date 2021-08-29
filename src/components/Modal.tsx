@@ -41,7 +41,7 @@ const Modal: React.FC<Props> = ({ modal, setModal, success }) => {
 							<div className="my-5">
 								<label className="block w-full space-y-1 text-gray-700 text-md font-semibold px-4 py-3 rounded-xl border transition hover:bg-gray-50 hover:bg-opacity-50 hover:border-purple-800" >
                                     <span>Give the pokemon a name</span>
-                                    <input type="text" id="name" value="" className="w-full p-3 font-thin transition duration-200 focus:shadow-md focus:outline-none ring-offset-2 border border-gray-400 rounded-lg focus:ring-2 focus:ring-purple-300" autoComplete="off" />
+                                    <input type="text" id="name" defaultValue="" className="w-full p-3 font-thin transition duration-200 focus:shadow-md focus:outline-none ring-offset-2 border border-gray-400 rounded-lg focus:ring-2 focus:ring-purple-300" autoComplete="off" />
                                     <label className="text-sm font-semibold text-gray-500">Please provide a unique name</label>
                                 </label>
 							</div>

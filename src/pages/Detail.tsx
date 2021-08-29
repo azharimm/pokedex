@@ -1,39 +1,69 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { useQuery } from "@apollo/client";
+import { GET_POKEMON_DETAIL } from "../graphql/Queries";
+import { bgColor } from "../utils/bgColor";
+//Components
 import Modal from "../components/Modal";
+
+interface RouteParams {
+	id: string;
+}
 
 const Detail = () => {
 	const [modal, setModal] = useState(false);
+	let { id } = useParams<RouteParams>();
+	const { data, loading, error } = useQuery(GET_POKEMON_DETAIL, {
+		variables: { id: parseInt(id) },
+	});
+	if (error) {
+		return <div className="text-center text-white">Oops! Something went wrong!</div>;
+	}
+	if (loading) {
+		return <div className="text-center text-white">Loading...</div>
+	}
 	return (
 		<>
-			<div className="w-full max-w-6xl mt-3 rounded bg-white shadow-xl p-10 lg:p-20 mx-auto text-gray-800 relative md:text-left">
+			<div className="w-full max-w-6xl mt-2 rounded bg-white shadow-xl p-10 lg:px-20 mx-auto text-gray-800 relative md:text-left">
 				<div className="md:flex items-center -mx-10">
 					<div className="w-full md:w-1/2 px-10 mb-10 md:mb-0">
 						<div className="relative">
 							<img
-								src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/1.svg"
+								src={`/pokemons/${id}.png`}
 								className="w-full relative z-10"
 								alt=""
 							/>
-							<div className="border-4 border-yellow-200 absolute top-10 bottom-10 left-10 right-10 z-0"></div>
+							<div
+								className={`border-4 border-yellow-200 absolute top-10 bottom-10 left-10 right-10 z-0`}
+							></div>
 						</div>
 					</div>
-					<div className="w-full md:w-1/2 px-10 py-5 bg-green-600 rounded-md">
+					<div
+						className={`w-full md:w-1/2 px-10 py-5 rounded-md ${bgColor(
+							data.pokemon_v2_pokemon[0].pokemon_v2_pokemontypes[0].pokemon_v2_type.name.toLowerCase()
+						)}`}
+					>
 						<div className="mb-10">
 							<div className="flex justify-between uppercase tracking-wide ">
 								<span className="text-2xl text-white font-semibold">
-									Bulbasaur
+									{data.pokemon_v2_pokemon[0].name}
 								</span>
 								<div className="">
-									<span className="text-sm font-medium bg-green-600 border-2 border-white py-1 px-2 rounded text-white align-middle mr-1">
-										Grass
-									</span>
-									<span className="text-sm font-medium bg-purple-600 border-2 border-white py-1 px-2 rounded text-white align-middle">
-										Poison
-									</span>
+									{data.pokemon_v2_pokemon[0].pokemon_v2_pokemontypes.map(
+										(poke: any, index: number) => (
+											<span
+												key={index}
+												className={`text-sm font-medium border-2 border-white py-1 px-2 rounded text-white align-middle mr-1 ${bgColor(
+													poke.pokemon_v2_type.name.toLowerCase()
+												)}`}
+											>
+												{poke.pokemon_v2_type.name}
+											</span>
+										)
+									)}
 								</div>
 							</div>
-							<div className="mt-2">
+							<div className="mt-5">
 								<p className="text-white">Profile:</p>
 								<table className="text-left w-full border-collapse text-white">
 									<tbody>
@@ -42,7 +72,9 @@ const Detail = () => {
 												Height
 											</td>
 											<td className="py-2 px-6 border-b border-grey-light">
-												0.7M
+												{data.pokemon_v2_pokemon[0]
+													.height / 10}{" "}
+												M
 											</td>
 										</tr>
 										<tr className="hover:bg-grey-lighter">
@@ -50,7 +82,9 @@ const Detail = () => {
 												Weight
 											</td>
 											<td className="py-2 px-6 border-b border-grey-light">
-												6.2Kg
+												{data.pokemon_v2_pokemon[0]
+													.weight / 10}{" "}
+												Kg
 											</td>
 										</tr>
 									</tbody>
@@ -62,90 +96,31 @@ const Detail = () => {
 								<p className="text-white">Stats:</p>
 								<table className="text-left w-full border-collapse text-white">
 									<tbody>
-										<tr className="hover:bg-grey-lighter">
-											<td className="py-3 px-6 border-b border-grey-light">
-												HP
-											</td>
-											<td className="py-3 px-6 border-b border-grey-light">
-												60
-											</td>
-										</tr>
-										<tr className="hover:bg-grey-lighter">
-											<td className="py-3 px-6 border-b border-grey-light">
-												Attack
-											</td>
-											<td className="py-3 px-6 border-b border-grey-light">
-												60
-											</td>
-										</tr>
-										<tr className="hover:bg-grey-lighter">
-											<td className="py-3 px-6 border-b border-grey-light">
-												Defense
-											</td>
-											<td className="py-3 px-6 border-b border-grey-light">
-												60
-											</td>
-										</tr>
-										<tr className="hover:bg-grey-lighter">
-											<td className="py-3 px-6 border-b border-grey-light">
-												Special-Attack
-											</td>
-											<td className="py-3 px-6 border-b border-grey-light">
-												60
-											</td>
-										</tr>
-										<tr className="hover:bg-grey-lighter">
-											<td className="py-3 px-6 border-b border-grey-light">
-												Special-Defense
-											</td>
-											<td className="py-3 px-6 border-b border-grey-light">
-												60
-											</td>
-										</tr>
-										<tr className="hover:bg-grey-lighter">
-											<td className="py-3 px-6 border-b border-grey-light">
-												Speed
-											</td>
-											<td className="py-3 px-6 border-b border-grey-light">
-												60
-											</td>
-										</tr>
+										{data.pokemon_v2_pokemon[0].pokemon_v2_pokemonstats.map(
+											(poke: any, index: number) => (
+												<tr className="hover:bg-grey-lighter" key={index}>
+													<td className="py-3 px-6 border-b border-grey-light">
+														{poke.pokemon_v2_stat.name}
+													</td>
+													<td className="py-3 px-6 border-b border-grey-light">
+														{poke.base_stat}
+													</td>
+												</tr>
+											)
+										)}
 									</tbody>
 								</table>
 							</div>
 							<div className="mt-5">
 								<p className="text-white">Moves:</p>
 								<div className="flex flex-wrap">
-									<span className="m-1 bg-gray-200 hover:bg-gray-300 rounded-full px-2 font-bold text-sm cursor-pointer">
-										#winter
-									</span>
-									<span className="m-1 bg-gray-200 hover:bg-gray-300 rounded-full px-2 font-bold text-sm cursor-pointer">
-										#stark
-									</span>
-									<span className="m-1 bg-gray-200 hover:bg-gray-300 rounded-full px-2 font-bold text-sm cursor-pointer">
-										#gameofthrones
-									</span>
-									<span className="m-1 bg-gray-200 hover:bg-gray-300 rounded-full px-2 font-bold text-sm cursor-pointer">
-										#stark
-									</span>
-									<span className="m-1 bg-gray-200 hover:bg-gray-300 rounded-full px-2 font-bold text-sm cursor-pointer">
-										#stark
-									</span>
-									<span className="m-1 bg-gray-200 hover:bg-gray-300 rounded-full px-2 font-bold text-sm cursor-pointer">
-										#stark
-									</span>
-									<span className="m-1 bg-gray-200 hover:bg-gray-300 rounded-full px-2 font-bold text-sm cursor-pointer">
-										#stark
-									</span>
-									<span className="m-1 bg-gray-200 hover:bg-gray-300 rounded-full px-2 font-bold text-sm cursor-pointer">
-										#stark
-									</span>
-									<span className="m-1 bg-gray-200 hover:bg-gray-300 rounded-full px-2 font-bold text-sm cursor-pointer">
-										#stark
-									</span>
-									<span className="m-1 bg-gray-200 hover:bg-gray-300 rounded-full px-2 font-bold text-sm cursor-pointer">
-										#stark
-									</span>
+									{
+										data.pokemon_v2_pokemon[0].pokemon_v2_pokemonmoves.map((poke: any, index: number) => (
+											<span className="m-1 bg-gray-200 hover:bg-gray-300 rounded-full px-2 font-bold text-sm cursor-pointer" key={index}>
+												#{poke.pokemon_v2_move.name}
+											</span>
+										))
+									}
 								</div>
 							</div>
 							<div className="flex mt-5">
@@ -155,7 +130,10 @@ const Detail = () => {
 								>
 									Leave
 								</Link>
-								<button className="bg-blue-500 hover:bg-blue-400 text-white font-semibold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded ml-1" onClick={() => setModal(prev => !prev)}>
+								<button
+									className="bg-blue-500 hover:bg-blue-400 text-white font-semibold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded ml-1"
+									onClick={() => setModal((prev) => !prev)}
+								>
 									Catch!
 								</button>
 							</div>
@@ -163,7 +141,11 @@ const Detail = () => {
 					</div>
 				</div>
 			</div>
-			<Modal modal={modal} setModal={() => setModal(prev => !prev)} success={true} />
+			<Modal
+				modal={modal}
+				setModal={() => setModal((prev) => !prev)}
+				success={true}
+			/>
 		</>
 	);
 };

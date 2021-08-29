@@ -1,6 +1,6 @@
 export const bgColor = (type: string) : string =>  {
     if(type === 'normal') {
-        return 'bg-blue-50';
+        return 'bg-black';
     }
     if(type === 'fighting') {
         return 'bg-red-900';
@@ -18,7 +18,7 @@ export const bgColor = (type: string) : string =>  {
         return 'bg-gray-900';
     }
     if(type === 'bug') {
-        return 'bg-green-200';
+        return 'bg-green-800';
     }
     if(type === 'ghost') {
         return 'bg-indigo-800';
@@ -51,7 +51,7 @@ export const bgColor = (type: string) : string =>  {
         return 'bg-gray-900';
     }
     if(type === 'fairy') {
-        return 'bg-yellow-300';
+        return 'bg-yellow-700';
     }
     if(type === 'unknown') {
         return 'bg-pink-300';

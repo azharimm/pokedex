@@ -5,6 +5,9 @@ import { GET_POKEMON_DETAIL } from "../graphql/Queries";
 import { bgColor } from "../utils/bgColor";
 //Components
 import Modal from "../components/Modal";
+import PokeType from "../components/PokeType"
+import PokeStat from "../components/PokeStat";
+import PokeMove from "../components/PokeMove";
 
 interface RouteParams {
 	id: string;
@@ -51,14 +54,7 @@ const Detail = () => {
 								<div className="">
 									{data.pokemon_v2_pokemon[0].pokemon_v2_pokemontypes.map(
 										(poke: any, index: number) => (
-											<span
-												key={index}
-												className={`text-sm font-medium border-2 border-white py-1 px-2 rounded text-white align-middle mr-1 ${bgColor(
-													poke.pokemon_v2_type.name.toLowerCase()
-												)}`}
-											>
-												{poke.pokemon_v2_type.name}
-											</span>
+											<PokeType index={index} type={poke.pokemon_v2_type} />
 										)
 									)}
 								</div>
@@ -98,14 +94,7 @@ const Detail = () => {
 									<tbody>
 										{data.pokemon_v2_pokemon[0].pokemon_v2_pokemonstats.map(
 											(poke: any, index: number) => (
-												<tr className="hover:bg-grey-lighter" key={index}>
-													<td className="py-3 px-6 border-b border-grey-light">
-														{poke.pokemon_v2_stat.name}
-													</td>
-													<td className="py-3 px-6 border-b border-grey-light">
-														{poke.base_stat}
-													</td>
-												</tr>
+												<PokeStat index={index} name={poke.pokemon_v2_stat.name} stat={poke.base_stat} />
 											)
 										)}
 									</tbody>
@@ -116,9 +105,7 @@ const Detail = () => {
 								<div className="flex flex-wrap">
 									{
 										data.pokemon_v2_pokemon[0].pokemon_v2_pokemonmoves.map((poke: any, index: number) => (
-											<span className="m-1 bg-gray-200 hover:bg-gray-300 rounded-full px-2 font-bold text-sm cursor-pointer" key={index}>
-												#{poke.pokemon_v2_move.name}
-											</span>
+											<PokeMove index={index} name={poke.pokemon_v2_move.name} />
 										))
 									}
 								</div>

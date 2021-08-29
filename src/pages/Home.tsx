@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { useLazyQuery } from "@apollo/client";
-//Query
+
 import { GET_POKEMON, LOAD_MORE, SEARCH_POKEMON } from "../graphql/Queries";
-//Components
+
 import Search from "../components/Search";
 import PokeItem from "../components/PokeItem";
-//Hooks
+
 import { useStateValue } from "../context/StateProvider";
 
 export type PokemonType = {
@@ -20,42 +20,36 @@ export type PokemonType = {
 
 const Home = () => {
 	const { state, dispatch } = useStateValue();
-	const [fetchPokemon, fetch] = useLazyQuery(GET_POKEMON);
-	const [loadMore, { data, loading, error }] = useLazyQuery(LOAD_MORE);
-	const [searchPokemon, search] = useLazyQuery(SEARCH_POKEMON);
+	const [fetchPokemon, fetch] = useLazyQuery(GET_POKEMON, {
+		onCompleted: (data => {
+			dispatch({
+				type: 'FETCH_POKEMON',
+				payload: data.pokemon_v2_pokemon
+			})
+		})
+	});
+	const [loadMore, more] = useLazyQuery(LOAD_MORE, {
+		onCompleted: (data => {
+			dispatch({
+				type: 'APPEND_POKEMON',
+				payload: data.pokemon_v2_pokemon
+			})
+		})
+	});
+	const [searchPokemon, search] = useLazyQuery(SEARCH_POKEMON, {
+		onCompleted: (data => {
+			dispatch({
+				type: 'FETCH_POKEMON',
+				payload: data.pokemon_v2_pokemon
+			})
+		})
+	});
 
 	useEffect(() => {
 		if(state.pokemons.length === 0) {
 			fetchPokemon();
 		}
-	}, []);
-	
-	useEffect(() => {
-		if (fetch.loading === false && fetch.data) {
-			dispatch({
-				type: 'FETCH_POKEMON',
-				payload: fetch.data.pokemon_v2_pokemon
-			})
-		}
-	}, [fetch.loading, fetch.data]);
-
-	useEffect(() => {
-		if (loading === false && data) {
-			dispatch({
-				type: 'APPEND_POKEMON',
-				payload: data.pokemon_v2_pokemon
-			})
-		}
-	}, [loading, data]);
-
-	useEffect(() => {
-		if (search.loading === false && search.data) {
-			dispatch({
-				type: 'FETCH_POKEMON',
-				payload: search.data.pokemon_v2_pokemon
-			})
-		}
-	}, [search.loading, search.data]);
+	}, [state.pokemons.length, fetchPokemon]);
 
 	const handleLoadmore = () => {
 		loadMore({
@@ -85,7 +79,6 @@ const Home = () => {
 			</div>
 		);
 	}
-
 
 	return (
 		<div>
@@ -121,11 +114,11 @@ const Home = () => {
 									<button
 										className="bg-blue-500 text-center hover:bg-blue-400 text-white font-semibold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded ml-1 disabled:opacity-50"
 										onClick={() => handleLoadmore()}
-										disabled={loading}
+										disabled={more.loading}
 									>
-										{loading ? "Loadmore ..." : "Loadmore"}
+										{more.loading ? "Loadmore ..." : "Loadmore"}
 									</button>
-									{error && (
+									{more.error && (
 										<p className="text-red-400">
 											Oops! something went wrong!
 										</p>

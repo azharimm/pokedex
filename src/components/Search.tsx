@@ -19,7 +19,7 @@ const Search: React.FC<Props> = ({ query, setQuery, handleSearch}) => {
 						id="search"
 						autoComplete="off"
 						placeholder="Search"
-						defaultValue={state.query}
+						value={state.query}
 						onChange={(e) => setQuery(e.target.value)}
 						required={true}
 						className="appearance-none w-full bg-green-200 outline-none focus:outline-none active:outline-none"

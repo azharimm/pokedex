@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { useQuery, useLazyQuery } from "@apollo/client";
+import React, { useEffect } from "react";
+import { useLazyQuery } from "@apollo/client";
 //Query
 import { GET_POKEMON, LOAD_MORE, SEARCH_POKEMON } from "../graphql/Queries";
 //Components
 import Search from "../components/Search";
 import PokeItem from "../components/PokeItem";
+//Hooks
+import { useStateValue } from "../context/StateProvider";
 
 export type PokemonType = {
 	id: number;
@@ -17,37 +19,52 @@ export type PokemonType = {
 };
 
 const Home = () => {
-	const fetch = useQuery(GET_POKEMON);
+	const { state, dispatch } = useStateValue();
+	const [fetchPokemon, fetch] = useLazyQuery(GET_POKEMON);
 	const [loadMore, { data, loading, error }] = useLazyQuery(LOAD_MORE);
 	const [searchPokemon, search] = useLazyQuery(SEARCH_POKEMON);
-	const [pokemons, setPokemons] = useState([] as any);
-	const [query, setQuery] = useState("");
-	const [isSearch, setIsSearch] = useState(false);
-	const [offset, setOffset] = useState(20);
 
 	useEffect(() => {
+		if(state.pokemons.length === 0) {
+			fetchPokemon();
+		}
+	}, []);
+	
+	useEffect(() => {
 		if (fetch.loading === false && fetch.data) {
-			setPokemons(fetch.data.pokemon_v2_pokemon);
+			dispatch({
+				type: 'FETCH_POKEMON',
+				payload: fetch.data.pokemon_v2_pokemon
+			})
 		}
 	}, [fetch.loading, fetch.data]);
 
 	useEffect(() => {
 		if (loading === false && data) {
-			setPokemons((prev: any) => [...prev, ...data.pokemon_v2_pokemon]);
+			dispatch({
+				type: 'APPEND_POKEMON',
+				payload: data.pokemon_v2_pokemon
+			})
 		}
 	}, [loading, data]);
 
 	useEffect(() => {
 		if (search.loading === false && search.data) {
-			setPokemons(search.data.pokemon_v2_pokemon);
+			dispatch({
+				type: 'FETCH_POKEMON',
+				payload: search.data.pokemon_v2_pokemon
+			})
 		}
 	}, [search.loading, search.data]);
 
 	const handleLoadmore = () => {
 		loadMore({
-			variables: { offset: offset },
+			variables: { offset: state.offset },
 		});
-		setOffset((prev) => prev + 20);
+		dispatch({
+			type: 'SET_OFFSET',
+			payload: state.offset + 20
+		})
 	};
 
 	const handleSearch = (e: React.FormEvent, q: string) => {
@@ -55,16 +72,11 @@ const Home = () => {
 		searchPokemon({
 			variables: { name: `%${q}%` },
 		});
-		setIsSearch(true);
+		dispatch({
+			type: 'SET_IS_SEARCH',
+			payload: true
+		})
 	};
-
-	if (fetch.loading) {
-		return (
-			<div className="container w-full md:w-2/3 mx-auto mt-5">
-				<div className="text-center text-white">Loading...</div>
-			</div>
-		);
-	}
 
 	if (fetch.error) {
 		return (
@@ -74,31 +86,37 @@ const Home = () => {
 		);
 	}
 
+
 	return (
 		<div>
 			<Search
-				query={query}
-				setQuery={setQuery}
+				query={state.query}
+				setQuery={(q) => {
+					dispatch({
+						type: 'SET_QUERY',
+						payload: q
+					})
+				}}
 				handleSearch={(e, query) => handleSearch(e, query)}
 			/>
-			{fetch.loading || search.loading ? (
+			{fetch.loading || search.loading  ? (
 				<div className="container w-full md:w-2/3 mx-auto mt-5">
 					<div className="text-center text-white">Loading...</div>
 				</div>
 			) : (
 				<div className="container w-full md:w-2/3 mx-auto mt-5">
-					{pokemons.length === 0 ? (
+					{state.pokemons.length === 0 ? (
 						<div className="text-center text-white">
 							No pokemon found
 						</div>
 					) : (
 						<>
 							<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-								{pokemons.map((d: PokemonType) => (
+								{state.pokemons.map((d: PokemonType) => (
 									<PokeItem pokemon={d} key={d.id} />
 								))}
 							</div>
-							{offset <= 1000 && !isSearch && (
+							{state.offset <= 1000 && !state.isSearch && (
 								<div className="mx-auto text-center mt-5 pb-5">
 									<button
 										className="bg-blue-500 text-center hover:bg-blue-400 text-white font-semibold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded ml-1 disabled:opacity-50"

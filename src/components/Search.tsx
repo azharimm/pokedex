@@ -1,4 +1,5 @@
 import React from "react";
+import { useStateValue } from "../context/StateProvider";
 
 export type Props = {
 	query: string;
@@ -7,6 +8,7 @@ export type Props = {
 }
 
 const Search: React.FC<Props> = ({ query, setQuery, handleSearch}) => {
+	const { state } = useStateValue();
 	return (
 		<div className="text-center mt-4 mx-5 md:mx-auto">
 			<form onSubmit={(e) => handleSearch(e, query)}>
@@ -17,6 +19,7 @@ const Search: React.FC<Props> = ({ query, setQuery, handleSearch}) => {
 						id="search"
 						autoComplete="off"
 						placeholder="Search"
+						defaultValue={state.query}
 						onChange={(e) => setQuery(e.target.value)}
 						required={true}
 						className="appearance-none w-full bg-green-200 outline-none focus:outline-none active:outline-none"

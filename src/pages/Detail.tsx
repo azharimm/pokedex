@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { GET_POKEMON_DETAIL } from "../graphql/Queries";
 import { bgColor } from "../utils/bgColor";
@@ -16,6 +16,7 @@ interface RouteParams {
 
 const Detail = () => {
 	const [modal, setModal] = useState(false);
+	const history = useHistory();
 	let { id } = useParams<RouteParams>();
 	const { data, loading, error } = useQuery(GET_POKEMON_DETAIL, {
 		variables: { id: parseInt(id) },
@@ -112,12 +113,12 @@ const Detail = () => {
 								</div>
 							</div>
 							<div className="flex mt-5">
-								<Link
-									to="/"
+								<button
 									className="bg-red-500 hover:bg-red-400 text-white font-semibold py-2 px-4 border-b-4 border-red-700 hover:border-red-500 rounded"
+									onClick={() => history.goBack()}
 								>
 									Leave
-								</Link>
+								</button>
 								<button
 									className="bg-blue-500 hover:bg-blue-400 text-white font-semibold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded ml-1"
 									onClick={() => setModal((prev) => !prev)}

@@ -29,17 +29,15 @@ const Modal: React.FC<Props> = ({
 		e.preventDefault();
 		const ownedPokemon = localStorage.getItem("ownedPokemon");
 		if (!ownedPokemon) {
-			console.log("create new local storate");
 			localStorage.setItem(
 				"ownedPokemon",
-				JSON.stringify([{ id, name, type, pokeName }])
+				JSON.stringify([{ id, name, pokemon_v2_pokemontypes: [{pokemon_v2_type: {name: type}}], pokeName }])
 			);
-			return;
 		} else {
 			localStorage.setItem(
 				"ownedPokemon",
 				JSON.stringify([
-					{ id, name, type, pokeName },
+					{ id, name, pokemon_v2_pokemontypes: [{pokemon_v2_type: {name: type}}], pokeName },
 					...JSON.parse(ownedPokemon),
 				])
 			);

@@ -4,12 +4,13 @@ import { Link } from "react-router-dom";
 import { PokemonType } from "../pages/Home";
 
 export type Props = {
-	pokemon: PokemonType
+	pokemon: PokemonType;
+	releasePokemon?: (pokeName: string | undefined) => void;
 }
 
-const PokeItem:React.FC<Props> = ({ pokemon }) => {
+const PokeItem:React.FC<Props> = ({ pokemon, releasePokemon }) => {
 	return (
-		<Link to={`detail/${pokemon.id}`}>
+		<Link to={pokemon.pokeName ? `#`:`detail/${pokemon.id}`}>
 			<div className="transform transition duration-500 hover:scale-110 motion-reduce:transform-none cursor-pointer flex justify-center items-center">
 				<div className="h-56 w-72 absolute flex justify-center items-center">
 					<img
@@ -35,15 +36,37 @@ const PokeItem:React.FC<Props> = ({ pokemon }) => {
 								<h1 className="text-gray-600 text-sm">{pokemon.pokemon_v2_pokemontypes[0].pokemon_v2_type.name}</h1>
 							</div>
 							<div className="flex flex-col justify-center items-center">
-								<h1 className="text-gray-500 text-xs">Owned</h1>
-								<h1 className="text-gray-600 text-sm">0</h1>
+								{
+									!releasePokemon ? (
+										<>
+										<h1 className="text-gray-500 text-xs">Owned</h1>
+										<h1 className="text-gray-600 text-sm">0</h1>
+										</>
+									) : (
+										<button
+											className="text-red-600 cursor-pointer"
+											title="Release Pokemon?"
+											onClick={() => releasePokemon(pokemon.pokeName)}
+											style={{zIndex: 1000}}
+										>x
+										</button>
+									)
+								}
 							</div>
 						</div>
 						<div className="w-full h-1/2 flex flex-col justify-center items-center">
-							<h1 className="text-gray-700 font-bold">
-								{pokemon.name}
-							</h1>
-							{/* <h1 className="text-gray-500 text-sm">Bulba</h1> */}
+							{
+								pokemon.pokeName ? (
+									<h1 className="text-center text-gray-700 font-bold">
+										{pokemon.pokeName} <br />
+										<span className="text-gray-500 text-sm">({pokemon.name})</span>
+									</h1>
+								): (
+									<h1 className="text-gray-700 font-bold">
+										{pokemon.name}
+									</h1>
+								)
+							}
 						</div>
 					</div>
 				</div>

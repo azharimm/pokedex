@@ -13,6 +13,7 @@ import { actionTypes } from "../context/reducer";
 export type PokemonType = {
 	id: number;
 	name: string;
+	pokeName?: string;
 	pokemon_v2_pokemontypes: {
 		pokemon_v2_type: {
 			name: string;

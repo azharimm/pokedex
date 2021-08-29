@@ -1,4 +1,5 @@
 import React, { useState, FormEvent, useEffect } from "react";
+import { PokemonType } from "../pages/Home";
 import "./Modal.css";
 
 export type Props = {
@@ -20,29 +21,57 @@ const Modal: React.FC<Props> = ({
 }) => {
 	const [pokeName, setPokeName] = useState("");
 	const [isSave, setIsSave] = useState(false);
+	const [notUnique, setNotUnique] = useState(false);
 	useEffect(() => {
-		if(modal) {
+		if (modal) {
 			setIsSave(false);
 		}
-	}, [modal])
+	}, [modal]);
 	const savePokemon = (e: FormEvent) => {
 		e.preventDefault();
 		const ownedPokemon = localStorage.getItem("ownedPokemon");
 		if (!ownedPokemon) {
 			localStorage.setItem(
 				"ownedPokemon",
-				JSON.stringify([{ id, name, pokemon_v2_pokemontypes: [{pokemon_v2_type: {name: type}}], pokeName }])
+				JSON.stringify([
+					{
+						id,
+						name,
+						pokemon_v2_pokemontypes: [
+							{ pokemon_v2_type: { name: type } },
+						],
+						pokeName,
+					},
+				])
 			);
 		} else {
+			const ownedPokemonParsed = JSON.parse(ownedPokemon);
+			const checkIfNameExists = ownedPokemonParsed.find(
+				(p: PokemonType) => p.pokeName === pokeName
+			);
+			console.log(checkIfNameExists);
+			if (checkIfNameExists) {
+				console.log("name is not available");
+				setNotUnique(true);
+				return;
+			}
 			localStorage.setItem(
 				"ownedPokemon",
 				JSON.stringify([
-					{ id, name, pokemon_v2_pokemontypes: [{pokemon_v2_type: {name: type}}], pokeName },
-					...JSON.parse(ownedPokemon),
+					{
+						id,
+						name,
+						pokemon_v2_pokemontypes: [
+							{ pokemon_v2_type: { name: type } },
+						],
+						pokeName,
+					},
+					...ownedPokemonParsed,
 				])
 			);
 		}
 		setPokeName("");
+		setNotUnique(false);
 		setIsSave(true);
 	};
 	return (
@@ -76,9 +105,7 @@ const Modal: React.FC<Props> = ({
 					{success ? (
 						<form onSubmit={(e) => savePokemon(e)}>
 							{isSave ? (
-								<p>
-									Your pokemon successfully catch and save
-								</p>
+								<p>Your pokemon successfully catch and save</p>
 							) : (
 								<>
 									<div className="my-5">
@@ -94,9 +121,11 @@ const Modal: React.FC<Props> = ({
 												}
 												required={true}
 											/>
-											<label className="text-sm font-semibold text-gray-500">
-												Please provide a unique name
-											</label>
+											{notUnique && (
+												<label className="text-sm font-semibold text-gray-500">
+													Please provide a unique name
+												</label>
+											)}
 										</label>
 									</div>
 									<div className="flex justify-end pt-2">

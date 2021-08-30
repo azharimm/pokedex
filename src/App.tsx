@@ -29,6 +29,11 @@ function App() {
 						<Route path="/" exact>
 							<Home />
 						</Route>
+						<Route>
+							<div className="mt-52 text-center text-white text-2xl">
+								Oopss! Page not found (404)
+							</div>
+						</Route>
 					</Switch>
 				</div>
 			</ApolloProvider>

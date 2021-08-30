@@ -10,6 +10,9 @@ export const GET_POKEMON = gql`
 					name
 				}
 			}
+			pokemon_v2_pokemonsprites {
+				sprites
+			}
 		}
 	}
 `;
@@ -23,6 +26,9 @@ export const LOAD_MORE = gql`
 				pokemon_v2_type {
 					name
 				}
+			}
+			pokemon_v2_pokemonsprites {
+				sprites
 			}
 		}
 	}
@@ -39,6 +45,9 @@ export const SEARCH_POKEMON = gql`
 				pokemon_v2_type {
 					name
 				}
+			}
+			pokemon_v2_pokemonsprites {
+				sprites
 			}
 		}
 	}
@@ -66,6 +75,9 @@ export const GET_POKEMON_DETAIL = gql`
 				pokemon_v2_type {
 					name
 				}
+			}
+			pokemon_v2_pokemonsprites {
+				sprites
 			}
 		}
 	}

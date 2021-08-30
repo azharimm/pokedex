@@ -19,6 +19,9 @@ export type PokemonType = {
 			name: string;
 		};
 	}[];
+	pokemon_v2_pokemonsprites: {
+		sprites: string;
+	}[];
 };
 
 const Home = () => {

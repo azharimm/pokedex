@@ -20,6 +20,7 @@ const Detail = () => {
 	const [isSuccess, setIsSuccess] = useState(false);
 	const history = useHistory();
 	let { id } = useParams<RouteParams>();
+	let pokeImage = '';
 	const { data, loading, error } = useQuery(GET_POKEMON_DETAIL, {
 		variables: { id: parseInt(id) },
 	});
@@ -30,11 +31,16 @@ const Detail = () => {
 		setIsSuccess(result);
 		setModal(true);
 	}
+	
 	if (error) {
 		return <div className="text-center text-white">Oops! Something went wrong!</div>;
 	}
 	if (loading) {
 		return <Loading />
+	}
+	if(data) {
+		pokeImage = JSON.parse(data.pokemon_v2_pokemon[0].pokemon_v2_pokemonsprites[0].sprites).other['official-artwork'].front_default;
+		pokeImage = pokeImage.replace('/media', 'https://raw.githubusercontent.com/PokeAPI/sprites/master/');
 	}
 	return (
 		<>
@@ -43,7 +49,7 @@ const Detail = () => {
 					<div className="w-full md:w-1/2 px-10 mb-10 md:mb-0">
 						<div className="relative">
 							<img
-								src={`/pokemons/${id}.png`}
+								src={pokeImage}
 								className="w-full relative z-10"
 								alt=""
 							/>
@@ -146,6 +152,7 @@ const Detail = () => {
 				id={data.pokemon_v2_pokemon[0].id}
 				name={data.pokemon_v2_pokemon[0].name}
 				type={data.pokemon_v2_pokemon[0].pokemon_v2_pokemontypes[0].pokemon_v2_type.name}
+				image={JSON.parse(data.pokemon_v2_pokemon[0].pokemon_v2_pokemonsprites[0].sprites).other['official-artwork'].front_default}
 				success={isSuccess}
 			/>
 		</>

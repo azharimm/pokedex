@@ -9,6 +9,7 @@ export type Props = {
 	id: number;
 	name: string;
 	type: string;
+	image?: string;
 };
 
 const Modal: React.FC<Props> = ({
@@ -18,6 +19,7 @@ const Modal: React.FC<Props> = ({
 	id,
 	name,
 	type,
+	image
 }) => {
 	const [pokeName, setPokeName] = useState("");
 	const [isSave, setIsSave] = useState(false);
@@ -39,10 +41,21 @@ const Modal: React.FC<Props> = ({
 					{
 						id,
 						name,
+						pokeName,
 						pokemon_v2_pokemontypes: [
 							{ pokemon_v2_type: { name: type } },
 						],
-						pokeName,
+						pokemon_v2_pokemonsprites: [
+							{
+								sprites: JSON.stringify({
+									other: {
+										'official-artwork': {
+											front_default: image
+										}
+									}
+								})
+							}
+						]
 					},
 				])
 			);
@@ -61,10 +74,21 @@ const Modal: React.FC<Props> = ({
 					{
 						id,
 						name,
+						pokeName,
 						pokemon_v2_pokemontypes: [
 							{ pokemon_v2_type: { name: type } },
 						],
-						pokeName,
+						pokemon_v2_pokemonsprites: [
+							{
+								sprites: JSON.stringify({
+									other: {
+										'official-artwork': {
+											front_default: image
+										}
+									}
+								})
+							}
+						]
 					},
 					...ownedPokemonParsed,
 				])

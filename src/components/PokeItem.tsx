@@ -10,6 +10,8 @@ export type Props = {
 
 const PokeItem:React.FC<Props> = ({ pokemon, releasePokemon }) => {
 	let ownedCount = 0;
+	let pokeImage = JSON.parse(pokemon.pokemon_v2_pokemonsprites[0].sprites).other['official-artwork'].front_default;
+	pokeImage = pokeImage.replace('/media', 'https://raw.githubusercontent.com/PokeAPI/sprites/master/');
 	const ownedPokemon = localStorage.getItem("ownedPokemon");
 	if(ownedPokemon) {
 		const ownedPokemonParsed = JSON.parse(ownedPokemon);
@@ -21,7 +23,7 @@ const PokeItem:React.FC<Props> = ({ pokemon, releasePokemon }) => {
 				<div className="h-56 w-72 absolute flex justify-center items-center">
 					<img
 						className="object-cover h-20 w-20 "
-						src={`/pokemons/${pokemon.id}.png`}
+						src={pokeImage}
 						alt=""
 					/>
 				</div>

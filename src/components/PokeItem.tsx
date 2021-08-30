@@ -9,6 +9,12 @@ export type Props = {
 }
 
 const PokeItem:React.FC<Props> = ({ pokemon, releasePokemon }) => {
+	let ownedCount = 0;
+	const ownedPokemon = localStorage.getItem("ownedPokemon");
+	if(ownedPokemon) {
+		const ownedPokemonParsed = JSON.parse(ownedPokemon);
+		ownedCount = ownedPokemonParsed.filter((p: PokemonType) => p.id === pokemon.id).length;
+	}
 	return (
 		<Link to={pokemon.pokeName ? `#`:`detail/${pokemon.id}`}>
 			<div className="transform transition duration-500 hover:scale-110 motion-reduce:transform-none cursor-pointer flex justify-center items-center">
@@ -40,16 +46,18 @@ const PokeItem:React.FC<Props> = ({ pokemon, releasePokemon }) => {
 									!releasePokemon ? (
 										<>
 										<h1 className="text-gray-500 text-xs">Owned</h1>
-										<h1 className="text-gray-600 text-sm">0</h1>
+										<h1 className="text-gray-600 text-sm">{ownedCount}</h1>
 										</>
 									) : (
+										<>
+										<h1 className="text-gray-500 text-xs">Release?</h1>
 										<button
 											className="text-red-600 cursor-pointer"
-											title="Release Pokemon?"
 											onClick={() => releasePokemon(pokemon.pokeName)}
 											style={{zIndex: 1000}}
 										>x
 										</button>
+										</>
 									)
 								}
 							</div>

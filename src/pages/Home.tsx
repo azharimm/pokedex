@@ -59,7 +59,7 @@ const Home = () => {
 	if (fetch.error) {
 		return (
 			<div className="text-center text-white">
-				Oopss! Something went wrong, please refresh the page
+				Oopss! Server error, please refresh the page
 			</div>
 		);
 	}

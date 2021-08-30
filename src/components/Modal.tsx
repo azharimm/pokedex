@@ -25,6 +25,8 @@ const Modal: React.FC<Props> = ({
 	useEffect(() => {
 		if (modal) {
 			setIsSave(false);
+			setNotUnique(false);
+			setPokeName("");
 		}
 	}, [modal]);
 	const savePokemon = (e: FormEvent) => {
@@ -120,7 +122,7 @@ const Modal: React.FC<Props> = ({
 												required={true}
 											/>
 											{notUnique && (
-												<label className="text-sm font-semibold text-gray-500">
+												<label className="text-sm font-semibold text-red-500 text-center">
 													Please provide a unique name
 												</label>
 											)}

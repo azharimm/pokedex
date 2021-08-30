@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useStateValue } from "../context/StateProvider";
 import logo from "../assets/logo.svg";
 
 function Navbar() {

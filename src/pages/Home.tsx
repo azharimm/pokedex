@@ -1,14 +1,11 @@
 import React, { useEffect } from "react";
-import { useLazyQuery } from "@apollo/client";
-
-import { GET_POKEMON, LOAD_MORE, SEARCH_POKEMON } from "../graphql/Queries";
 
 import Search from "../components/Search";
 import PokeItem from "../components/PokeItem";
 import Loading from "../components/Loading";
 
 import { useStateValue } from "../context/StateProvider";
-import { actionTypes } from "../context/reducer";
+import { useFetching, useLoadmore, useSearch } from "../hooks/useCustomQuery";
 
 export type PokemonType = {
 	id: number;
@@ -24,32 +21,13 @@ export type PokemonType = {
 	}[];
 };
 
+
+
 const Home = () => {
 	const { state, dispatch } = useStateValue();
-	const [fetchPokemon, fetch] = useLazyQuery(GET_POKEMON, {
-		onCompleted: (data) => {
-			dispatch({
-				type: actionTypes.FETCH_POKEMON,
-				payload: data.pokemon_v2_pokemon,
-			});
-		},
-	});
-	const [loadMore, more] = useLazyQuery(LOAD_MORE, {
-		onCompleted: (data) => {
-			dispatch({
-				type: actionTypes.APPEND_POKEMON,
-				payload: data.pokemon_v2_pokemon,
-			});
-		},
-	});
-	const [searchPokemon, search] = useLazyQuery(SEARCH_POKEMON, {
-		onCompleted: (data) => {
-			dispatch({
-				type: actionTypes.FETCH_POKEMON,
-				payload: data.pokemon_v2_pokemon,
-			});
-		},
-	});
+	const { fetchPokemon, fetch } = useFetching();
+	const { loadMore, more } = useLoadmore();
+	const { searchPokemon, search } = useSearch();
 
 	useEffect(() => {
 		if (state.pokemons.length === 0) {

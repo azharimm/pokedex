@@ -9,6 +9,7 @@ import Loading from "../components/Loading";
 import PokeType from "../components/PokeType"
 import PokeStat from "../components/PokeStat";
 import PokeMove from "../components/PokeMove";
+import logo from "../assets/logo.svg";
 
 interface RouteParams {
 	id: string;
@@ -40,7 +41,11 @@ const Detail = () => {
 	}
 	if(data) {
 		pokeImage = JSON.parse(data.pokemon_v2_pokemon[0].pokemon_v2_pokemonsprites[0].sprites).other['official-artwork'].front_default;
-		pokeImage = pokeImage.replace('/media', 'https://raw.githubusercontent.com/PokeAPI/sprites/master/');
+		if(pokeImage) {
+			pokeImage = pokeImage.replace('/media', 'https://raw.githubusercontent.com/PokeAPI/sprites/master/');
+		} else {
+			pokeImage = logo;
+		}
 	}
 	return (
 		<>

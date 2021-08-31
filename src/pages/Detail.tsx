@@ -18,9 +18,9 @@ const Detail = () => {
 	const [modal, setModal] = useState(false);
 	const [isCatching, setIsCatching] = useState(false);
 	const [isSuccess, setIsSuccess] = useState(false);
+	const [pokeImage, setPokeImage] = useState("");
 	const history = useHistory();
 	let { name } = useParams<RouteParams>();
-	let pokeImage = "";
 	const { data, loading, error } = useQuery(SHOW_POKEMON, {
 		variables: { name },
 	});
@@ -43,7 +43,9 @@ const Detail = () => {
 		return <Loading />;
 	}
 	if (data) {
-		pokeImage = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${data.pokemon.id}.svg`;
+		if(pokeImage === '') {
+			setPokeImage(`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${data.pokemon.id}.svg`)
+		}
 	}
 	return (
 		<>
@@ -162,7 +164,7 @@ const Detail = () => {
 				setModal={() => setModal((prev) => !prev)}
 				id={data.pokemon.id}
 				name={data.pokemon.name}
-				image={data.pokemon.sprites.front_default}
+				image={pokeImage}
 				success={isSuccess}
 			/>
 		</>

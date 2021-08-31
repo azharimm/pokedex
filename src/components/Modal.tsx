@@ -40,7 +40,7 @@ const Modal: React.FC<Props> = ({
 						id,
 						name,
 						pokeName,
-						image,
+						dreamworld: image,
 					},
 				])
 			);
@@ -60,7 +60,7 @@ const Modal: React.FC<Props> = ({
 						id,
 						name,
 						pokeName,
-						image,
+						dreamworld: image,
 					},
 					...ownedPokemonParsed,
 				])

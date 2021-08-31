@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { useQuery } from "@apollo/client";
-import { GET_POKEMON_DETAIL } from "../graphql/Queries";
+import { SHOW_POKEMON } from "../graphql/Queries";
 import { bgColor, catching } from "../utils/utils";
 //Components
 import Modal from "../components/Modal";
@@ -9,10 +9,9 @@ import Loading from "../components/Loading";
 import PokeType from "../components/PokeType"
 import PokeStat from "../components/PokeStat";
 import PokeMove from "../components/PokeMove";
-import logo from "../assets/logo.svg";
 
 interface RouteParams {
-	id: string;
+	name: string;
 }
 
 const Detail = () => {
@@ -20,10 +19,9 @@ const Detail = () => {
 	const [isCatching, setIsCatching] = useState(false);
 	const [isSuccess, setIsSuccess] = useState(false);
 	const history = useHistory();
-	let { id } = useParams<RouteParams>();
-	let pokeImage = '';
-	const { data, loading, error } = useQuery(GET_POKEMON_DETAIL, {
-		variables: { id: parseInt(id) },
+	let { name } = useParams<RouteParams>();
+	const { data, loading, error } = useQuery(SHOW_POKEMON, {
+		variables: { name },
 	});
 	const catchPokemon = async () => {
 		setIsCatching(true);
@@ -32,20 +30,12 @@ const Detail = () => {
 		setIsSuccess(result);
 		setModal(true);
 	}
-	
+
 	if (error) {
 		return <div className="text-center text-white">Oops! Something went wrong!</div>;
 	}
 	if (loading) {
 		return <Loading />
-	}
-	if(data) {
-		pokeImage = JSON.parse(data.pokemon_v2_pokemon[0].pokemon_v2_pokemonsprites[0].sprites).other['official-artwork'].front_default;
-		if(pokeImage) {
-			pokeImage = pokeImage.replace('/media', 'https://raw.githubusercontent.com/PokeAPI/sprites/master/');
-		} else {
-			pokeImage = logo;
-		}
 	}
 	return (
 		<>
@@ -54,7 +44,7 @@ const Detail = () => {
 					<div className="w-full md:w-1/2 px-10 mb-10 md:mb-0">
 						<div className="relative">
 							<img
-								src={pokeImage}
+								src={data.pokemon.sprites.front_default}
 								className="w-full relative z-10"
 								alt=""
 							/>
@@ -65,18 +55,18 @@ const Detail = () => {
 					</div>
 					<div
 						className={`w-full md:w-1/2 px-10 py-5 rounded-md ${bgColor(
-							data.pokemon_v2_pokemon[0].pokemon_v2_pokemontypes[0].pokemon_v2_type.name.toLowerCase()
+							data.pokemon.types[0].type.name.toLowerCase()
 						)}`}
 					>
 						<div className="mb-10">
 							<div className="flex justify-between uppercase tracking-wide ">
 								<span className="text-2xl text-white font-semibold">
-									{data.pokemon_v2_pokemon[0].name}
+									{data.pokemon.name}
 								</span>
 								<div className="">
-									{data.pokemon_v2_pokemon[0].pokemon_v2_pokemontypes.map(
+									{data.pokemon.types.map(
 										(poke: any, index: number) => (
-											<PokeType key={index} name={poke.pokemon_v2_type.name} />
+											<PokeType key={index} name={poke.type.name} />
 										)
 									)}
 								</div>
@@ -90,7 +80,7 @@ const Detail = () => {
 												Height
 											</td>
 											<td className="py-2 px-6 border-b border-grey-light">
-												{data.pokemon_v2_pokemon[0]
+												{data.pokemon
 													.height / 10}{" "}
 												M
 											</td>
@@ -100,7 +90,7 @@ const Detail = () => {
 												Weight
 											</td>
 											<td className="py-2 px-6 border-b border-grey-light">
-												{data.pokemon_v2_pokemon[0]
+												{data.pokemon
 													.weight / 10}{" "}
 												Kg
 											</td>
@@ -114,9 +104,9 @@ const Detail = () => {
 								<p className="text-white">Stats:</p>
 								<table className="text-left w-full border-collapse text-white">
 									<tbody>
-										{data.pokemon_v2_pokemon[0].pokemon_v2_pokemonstats.map(
+										{data.pokemon.stats.map(
 											(poke: any, index: number) => (
-												<PokeStat key={index} name={poke.pokemon_v2_stat.name} stat={poke.base_stat} />
+												<PokeStat key={index} name={poke.stat.name} stat={poke.base_stat} />
 											)
 										)}
 									</tbody>
@@ -126,8 +116,8 @@ const Detail = () => {
 								<p className="text-white">Moves:</p>
 								<div className="flex flex-wrap">
 									{
-										data.pokemon_v2_pokemon[0].pokemon_v2_pokemonmoves.map((poke: any, index: number) => (
-											<PokeMove key={index} name={poke.pokemon_v2_move.name} />
+										data.pokemon.moves.slice(0, 14).map((poke: any, index: number) => (
+											<PokeMove key={index} name={poke.move.name} />
 										))
 									}
 								</div>
@@ -154,10 +144,9 @@ const Detail = () => {
 			<Modal
 				modal={modal}
 				setModal={() => setModal((prev) => !prev)}
-				id={data.pokemon_v2_pokemon[0].id}
-				name={data.pokemon_v2_pokemon[0].name}
-				type={data.pokemon_v2_pokemon[0].pokemon_v2_pokemontypes[0].pokemon_v2_type.name}
-				image={JSON.parse(data.pokemon_v2_pokemon[0].pokemon_v2_pokemonsprites[0].sprites).other['official-artwork'].front_default}
+				id={data.pokemon.id}
+				name={data.pokemon.name}
+				image={data.pokemon.sprites.front_default}
 				success={isSuccess}
 			/>
 		</>

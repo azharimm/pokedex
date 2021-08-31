@@ -1,15 +1,15 @@
 import { useLazyQuery } from "@apollo/client";
-import { GET_POKEMON, LOAD_MORE, SEARCH_POKEMON } from "../graphql/Queries";
+import { FETCH_POKEMON } from "../graphql/Queries";
 import { actionTypes } from "../context/reducer";
 import { useStateValue } from "../context/StateProvider";
 
-export const useFetching = () => {
+export const useFetch = () => {
     const { dispatch } = useStateValue();
-	const [fetchPokemon, fetch] = useLazyQuery(GET_POKEMON, {
+	const [fetchPokemon, fetch] = useLazyQuery(FETCH_POKEMON, {
 		onCompleted: (data) => {
 			dispatch({
-				type: actionTypes.FETCH_POKEMON,
-				payload: data.pokemon_v2_pokemon,
+				type: actionTypes.APPEND_POKEMON,
+				payload: data.pokemons.results,
 			});
 		},
 	});
@@ -22,11 +22,11 @@ export const useFetching = () => {
 
 export const useLoadmore = () => {
     const { dispatch } = useStateValue();
-	const [loadMore, more] = useLazyQuery(LOAD_MORE, {
+	const [loadMore, more] = useLazyQuery(FETCH_POKEMON, {
 		onCompleted: (data) => {
 			dispatch({
 				type: actionTypes.APPEND_POKEMON,
-				payload: data.pokemon_v2_pokemon,
+				payload: data.pokemons.results,
 			});
 		},
 	});
@@ -34,22 +34,5 @@ export const useLoadmore = () => {
 	return {
 		loadMore,
 		more,
-	};
-};
-
-export const useSearch = () => {
-    const { dispatch } = useStateValue();
-	const [searchPokemon, search] = useLazyQuery(SEARCH_POKEMON, {
-		onCompleted: (data) => {
-			dispatch({
-				type: actionTypes.FETCH_POKEMON,
-				payload: data.pokemon_v2_pokemon,
-			});
-		},
-	});
-
-	return {
-		searchPokemon,
-		search,
 	};
 };

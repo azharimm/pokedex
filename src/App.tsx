@@ -12,7 +12,7 @@ import "./App.css";
 function App() {
 	const client = new ApolloClient({
 		cache: new InMemoryCache(),
-		uri: "https://beta.pokeapi.co/graphql/v1beta",
+		uri: "https://graphql-pokeapi.graphcdn.app/",
 	});
 	return (
 		<Router>
@@ -23,7 +23,7 @@ function App() {
 						<Route path="/owned" exact>
 							<Owned />
 						</Route>
-						<Route path="/detail/:id">
+						<Route path="/detail/:name">
 							<Detail />
 						</Route>
 						<Route path="/" exact>

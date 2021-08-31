@@ -1,37 +1,29 @@
 import React, { useEffect } from "react";
 
-import Search from "../components/Search";
 import PokeItem from "../components/PokeItem";
 import Loading from "../components/Loading";
 
 import { useStateValue } from "../context/StateProvider";
-import { useFetching, useLoadmore, useSearch } from "../hooks/useCustomQuery";
+import {useLoadmore, useFetch} from "../hooks/useCustomQuery";
 
 export type PokemonType = {
 	id: number;
 	name: string;
 	pokeName?: string;
-	pokemon_v2_pokemontypes: {
-		pokemon_v2_type: {
-			name: string;
-		};
-	}[];
-	pokemon_v2_pokemonsprites: {
-		sprites: string;
-	}[];
+	url?: string;
+	image: string;
+	artwork: string;
+	dreamworld: string;
 };
-
-
 
 const Home = () => {
 	const { state, dispatch } = useStateValue();
-	const { fetchPokemon, fetch } = useFetching();
 	const { loadMore, more } = useLoadmore();
-	const { searchPokemon, search } = useSearch();
+	const { fetchPokemon , fetch } = useFetch();
 
 	useEffect(() => {
 		if (state.pokemons.length === 0) {
-			fetchPokemon();
+			fetchPokemon({ variables: { offset: 0}});
 		}
 	}, [state.pokemons.length, fetchPokemon]);
 
@@ -45,17 +37,6 @@ const Home = () => {
 		});
 	};
 
-	const handleSearch = (e: React.FormEvent, q: string) => {
-		e.preventDefault();
-		searchPokemon({
-			variables: { name: `%${q}%` },
-		});
-		dispatch({
-			type: "SET_IS_SEARCH",
-			payload: true,
-		});
-	};
-
 	if (fetch.error) {
 		return (
 			<div className="text-center text-white">
@@ -64,23 +45,12 @@ const Home = () => {
 		);
 	}
 
-	if (fetch.loading || search.loading) {
+	if (fetch.loading) {
 		return <Loading />;
 	}
 
 	return (
 		<div>
-			<Search
-				query={state.query}
-				setQuery={(q) => {
-					dispatch({
-						type: "SET_QUERY",
-						payload: q,
-					});
-				}}
-				handleSearch={(e, query) => handleSearch(e, query)}
-			/>
-
 			<div className="container w-full md:w-2/3 mx-auto mt-5">
 				{state.pokemons.length === 0 ? (
 					<div className="text-center text-white">

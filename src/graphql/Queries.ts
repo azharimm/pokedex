@@ -1,83 +1,53 @@
 import { gql } from "@apollo/client";
 
-export const GET_POKEMON = gql`
-	query listPokemons {
-		pokemon_v2_pokemon(limit: 20) {
-			name
-			id
-			pokemon_v2_pokemontypes(limit: 1) {
-				pokemon_v2_type {
-					name
-				}
+export const FETCH_POKEMON = gql`
+	query listPokemons($offset: Int!) {
+		pokemons(limit: 20, offset: $offset) {
+			count
+			next
+			previous
+			nextOffset
+			prevOffset
+			params
+			results {
+				id
+				url
+				name
+				image
+				artwork
+				dreamworld
 			}
-			pokemon_v2_pokemonsprites {
-				sprites
-			}
+			status
+			message
 		}
 	}
 `;
 
-export const LOAD_MORE = gql`
-	query loadMore($offset: Int!) {
-		pokemon_v2_pokemon(limit: 20, offset: $offset) {
-			name
-			id
-			pokemon_v2_pokemontypes(limit: 1) {
-				pokemon_v2_type {
-					name
-				}
-			}
-			pokemon_v2_pokemonsprites {
-				sprites
-			}
-		}
-	}
-`;
-
-export const SEARCH_POKEMON = gql`
-	query samplePokeAPIquery($name: String!) {
-		pokemon_v2_pokemon(where: { name: { _like: $name } }) {
-			name
+export const SHOW_POKEMON = gql`
+	query showPokemon($name: String!) {
+		pokemon(name: $name) {
 			id
 			height
 			weight
-			pokemon_v2_pokemontypes {
-				pokemon_v2_type {
+			name
+			sprites {
+				front_default
+			}
+			types {
+				type {
 					name
 				}
 			}
-			pokemon_v2_pokemonsprites {
-				sprites
-			}
-		}
-	}
-`;
-
-export const GET_POKEMON_DETAIL = gql`
-	query showPokemon($id: Int!) {
-		pokemon_v2_pokemon(where: { id: { _eq: $id } }) {
-			name
-			id
-			height
-			weight
-			pokemon_v2_pokemonstats {
+			stats {
 				base_stat
-				pokemon_v2_stat {
+				stat {
 					name
 				}
 			}
-			pokemon_v2_pokemonmoves(limit: 10) {
-				pokemon_v2_move {
+			moves {
+				move {
 					name
 				}
-			}
-			pokemon_v2_pokemontypes {
-				pokemon_v2_type {
-					name
-				}
-			}
-			pokemon_v2_pokemonsprites {
-				sprites
 			}
 		}
 	}

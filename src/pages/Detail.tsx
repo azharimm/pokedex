@@ -6,7 +6,7 @@ import { bgColor, catching } from "../utils/utils";
 //Components
 import Modal from "../components/Modal";
 import Loading from "../components/Loading";
-import PokeType from "../components/PokeType"
+import PokeType from "../components/PokeType";
 import PokeStat from "../components/PokeStat";
 import PokeMove from "../components/PokeMove";
 
@@ -20,6 +20,7 @@ const Detail = () => {
 	const [isSuccess, setIsSuccess] = useState(false);
 	const history = useHistory();
 	let { name } = useParams<RouteParams>();
+	let pokeImage = "";
 	const { data, loading, error } = useQuery(SHOW_POKEMON, {
 		variables: { name },
 	});
@@ -29,13 +30,20 @@ const Detail = () => {
 		setIsCatching(false);
 		setIsSuccess(result);
 		setModal(true);
-	}
+	};
 
 	if (error) {
-		return <div className="text-center text-white">Oops! Something went wrong!</div>;
+		return (
+			<div className="text-center text-white">
+				Oops! Something went wrong!
+			</div>
+		);
 	}
 	if (loading) {
-		return <Loading />
+		return <Loading />;
+	}
+	if (data) {
+		pokeImage = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${data.pokemon.id}.svg`;
 	}
 	return (
 		<>
@@ -44,7 +52,7 @@ const Detail = () => {
 					<div className="w-full md:w-1/2 px-10 mb-10 md:mb-0">
 						<div className="relative">
 							<img
-								src={data.pokemon.sprites.front_default}
+								src={pokeImage}
 								className="w-full relative z-10"
 								alt=""
 							/>
@@ -66,7 +74,10 @@ const Detail = () => {
 								<div className="">
 									{data.pokemon.types.map(
 										(poke: any, index: number) => (
-											<PokeType key={index} name={poke.type.name} />
+											<PokeType
+												key={index}
+												name={poke.type.name}
+											/>
 										)
 									)}
 								</div>
@@ -80,9 +91,7 @@ const Detail = () => {
 												Height
 											</td>
 											<td className="py-2 px-6 border-b border-grey-light">
-												{data.pokemon
-													.height / 10}{" "}
-												M
+												{data.pokemon.height / 10} M
 											</td>
 										</tr>
 										<tr className="hover:bg-grey-lighter">
@@ -90,9 +99,7 @@ const Detail = () => {
 												Weight
 											</td>
 											<td className="py-2 px-6 border-b border-grey-light">
-												{data.pokemon
-													.weight / 10}{" "}
-												Kg
+												{data.pokemon.weight / 10} Kg
 											</td>
 										</tr>
 									</tbody>
@@ -106,7 +113,11 @@ const Detail = () => {
 									<tbody>
 										{data.pokemon.stats.map(
 											(poke: any, index: number) => (
-												<PokeStat key={index} name={poke.stat.name} stat={poke.base_stat} />
+												<PokeStat
+													key={index}
+													name={poke.stat.name}
+													stat={poke.base_stat}
+												/>
 											)
 										)}
 									</tbody>
@@ -115,11 +126,14 @@ const Detail = () => {
 							<div className="mt-5">
 								<p className="text-white">Moves:</p>
 								<div className="flex flex-wrap">
-									{
-										data.pokemon.moves.slice(0, 14).map((poke: any, index: number) => (
-											<PokeMove key={index} name={poke.move.name} />
-										))
-									}
+									{data.pokemon.moves
+										.slice(0, 14)
+										.map((poke: any, index: number) => (
+											<PokeMove
+												key={index}
+												name={poke.move.name}
+											/>
+										))}
 								</div>
 							</div>
 							<div className="flex mt-5">
@@ -134,7 +148,9 @@ const Detail = () => {
 									onClick={() => catchPokemon()}
 									disabled={isCatching}
 								>
-									{isCatching ? 'Catching Pokemon...' : 'Catch!'}
+									{isCatching
+										? "Catching Pokemon..."
+										: "Catch!"}
 								</button>
 							</div>
 						</div>

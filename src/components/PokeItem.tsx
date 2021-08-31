@@ -9,6 +9,7 @@ export type Props = {
 
 const PokeItem: React.FC<Props> = ({ pokemon, releasePokemon }) => {
 	let ownedCount = 0;
+
 	const ownedPokemon = localStorage.getItem("ownedPokemon");
 	if (ownedPokemon) {
 		const ownedPokemonParsed = JSON.parse(ownedPokemon);
@@ -22,8 +23,8 @@ const PokeItem: React.FC<Props> = ({ pokemon, releasePokemon }) => {
 				<div className="h-56 w-72 absolute flex justify-center items-center">
 					<img
 						className="h-20 w-20 "
-						src={pokemon.image}
-						alt=""
+						src={pokemon.dreamworld}
+						alt={pokemon.name}
 					/>
 				</div>
 

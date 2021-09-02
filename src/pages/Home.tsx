@@ -51,7 +51,7 @@ const Home = () => {
 
 	return (
 		<div>
-			<div className="container w-full md:w-2/3 mx-auto mt-5">
+			<div className="container w-full md:w-2/3 mx-auto mt-5 pt-12">
 				{state.pokemons.length === 0 ? (
 					<div className="text-center text-white">
 						No pokemon found
